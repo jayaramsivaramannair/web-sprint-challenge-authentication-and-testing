@@ -72,8 +72,31 @@ These goals may or may not be things you have learned in this module but they bu
 Be prepared to demonstrate your understanding of this week's concepts by answering questions on the following topics.
 
 1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
+
+```
+Using sessions will help us track user logins using a session id. This information can be directly stored on the server which provides us with a greater degree of control over user sessions. When sessions are used, the user session is tracked by way of cookies which are passed back and forth between the client and the server and is usually stored on the browser. Since the cookie gets automatically saved on the browser, it does not need to be provided specifically when making an access request to a protected resource. 
+
+On the other hand, JSON web tokens (JWT) are also used to authenticate the user and the token encodes key information about the user which can be decoded by the server. A JWT is a string which has three parts separated by a period. The first part is the header which contains information about the algorithm used. The second part is payload which contains information about the user such as the user id, username and the date of creation of the token. The third part contains the signature which is generated using a secret which encodes the header and payload information using base64 encoding. 
+
+The part which differentiates JWT from sessions is that JWT's are not stored on the server and every time a client makes a request to a protected resource, the token must be provided as part of request header (unlike session ids) so that the server can verify if the client can access the resource or not. 
+
+```
 2. What does `bcryptjs` do to help us store passwords in a secure manner?
+```
+bcryptjs has a hash method which converts the user password  into an alpha-numeric string of the same length based on the algorithm used by the hashing function. This makes it difficult for hackers to gain access to user passwords and decrypt them. In order to reverse engineer the user password, the attacker or hacker will need to know the algorithm used and the rounds which were used to generate the hash. 
+```
+
 3. How are unit tests different from integration and end-to-end testing?
+
+```
+Unit tests only test small unit of software in isolation such as functions or methods. 
+
+On the other hand, integration tests test a part of the application involving different units to check how they are interacting with each other and if they are working correctly or not. End-to-end testing however simulates and tests the entire user experience right from the point when they log into the system to when they exit out of the system. 
+```
+
 4. How does _Test Driven Development_ change the way we write applications and tests?
+```
+Instead of writing the applications and then testing them, we start with the tests and then proceed to finish the applications in case of Test Driven Development (TDD). Thus, TDD helps us start with the end in mind. In case of TDD, we finish writing the tests then proceed to implement the associated function until the tests pass.  
+```
 
 ## CodeGrade Test Submission
