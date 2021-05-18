@@ -1,7 +1,14 @@
 const router = require('express').Router();
+const { checkIfUnique, checkPayload, checkUsernameExists } = require('../middleware/validateUser.js')
 
-router.post('/register', (req, res) => {
-  res.end('implement register, please!');
+const Users = require("../users-model.js")
+const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+const { JWT_SECRET } = require("../secrets.js")
+
+
+router.post('/register', checkPayload, checkIfUnique, async (req, res, next) => {
+  //res.end('implement register, please!');
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -27,10 +34,25 @@ router.post('/register', (req, res) => {
     4- On FAILED registration due to the `username` being taken,
       the response body should include a string exactly as follows: "username taken".
   */
+  try {
+    const username = req.body.username
+    const password = req.body.password
+
+    const newUser = await Users.add({
+      username,
+      password: await bcrypt.hash(password, 8) // 2 ^ 8 rounds of hashing
+    })
+
+    res.status(201).json(newUser)
+
+  } catch (err) {
+    next(err)
+  }
+
 });
 
-router.post('/login', (req, res) => {
-  res.end('implement login, please!');
+router.post('/login', checkPayload, checkUsernameExists, async (req, res, next) => {
+  //res.end('implement login, please!');
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -54,6 +76,26 @@ router.post('/login', (req, res) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
+  try {
+    const options = {
+      expiresIn: '1d',
+    }
+
+    const payload = {
+      subject: req.user.id,
+      username: req.user.username,
+    }
+
+    const token = jwt.sign(payload, JWT_SECRET, options)
+
+    res.status(200).json({
+      message: `welcome, ${req.user.username}`,
+      token: token,
+    })
+
+  } catch (err) {
+    next(err)
+  }
 });
 
 module.exports = router;
